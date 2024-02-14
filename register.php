@@ -67,9 +67,9 @@ var_dump($_POST);
 
 <body>
 
-    <div class="container">
+    <div class="container py-4">
 
-        <form action="#" method="POST">
+        <form action="#" method="POST" class="col-4 mx-auto">
             <fieldset>
                 <legend>Inscription utilisateur</legend>
                 <div class="row">

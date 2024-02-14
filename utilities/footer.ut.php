@@ -1,5 +1,5 @@
 <footer>
-    <p>Copyright</p>
+    <p class="text-center">Copyright</p>
 </footer>
 
 </body>
