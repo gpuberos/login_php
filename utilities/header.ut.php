@@ -7,6 +7,7 @@ $db = getPDOlink($config);
 
 // Démarrage d'une nouvelle session ou reprise d'une session existante
 session_start();
+
 ?>
 
 <!DOCTYPE html>
@@ -26,6 +27,6 @@ session_start();
 <body class="d-flex flex-column vh-100">
     <header>
         <?php require_once dirname(__DIR__) . ("/utilities/navbar.ut.php"); ?>
-
     </header>
+
     <main class="flex-grow-1">

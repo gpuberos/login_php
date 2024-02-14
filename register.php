@@ -21,7 +21,7 @@ if (!empty($_POST)) {
         // Récupération des données en les protégeant
 
         // Suppression des balises HTML et PHP d'une chaîne
-        $pseudo = strip_tags($_POST["user_name"]);
+        $userName = strip_tags($_POST["user_name"]);
 
         // Vérification de la validité de l'email
         if (!filter_var($_POST["email_address"], FILTER_VALIDATE_EMAIL)) {
@@ -30,20 +30,20 @@ if (!empty($_POST)) {
 
         // Hashage du mot de passe en utilisant l'algorithme ARGON2ID
         // Un "sel" unique est automatiquement généré et inclus dans le hachage du mot de passe
-        $pass = password_hash($_POST["user_password"], PASSWORD_ARGON2ID);
+        $password = password_hash($_POST["user_password"], PASSWORD_ARGON2ID);
 
         // Ajout de tous les contrôles souhaités ici
 
         // Enregistrement en base de données
         // Le mot de passe est passé directement car il est hashé, ROLE est du JSON
         $sql = "INSERT INTO `users`(`user_name`, `email_address`, `user_password`, `user_roles`) 
-        VALUES (:user_name, :email_address, '$pass', '[\"ROLE_USER\"]')";
+        VALUES (:user_name, :email_address, '$password', '[\"ROLE_USER\"]')";
 
         // Préparation de la requête SQL
         $query = $db->prepare($sql);
 
         // Liaison de la valeur du pseudo à l'identifiant :user_name dans la requête SQL
-        $query->bindValue(":user_name", $pseudo);
+        $query->bindValue(":user_name", $userName);
 
         // Liaison de la valeur de l'email à l'identifiant :email_address dans la requête SQL
         $query->bindValue(":email_address", $_POST["email_address"]);
@@ -64,7 +64,7 @@ if (!empty($_POST)) {
         // Stockage des informations de l'utilisateur dans $_SESSION
         $_SESSION["user"] = [
             "id" => $id,
-            "username" => $pseudo,
+            "username" => $userName,
             "email" => $_POST["email_address"],
             "roles" => ["ROLE_USER"]
         ];

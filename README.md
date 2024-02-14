@@ -7,7 +7,7 @@ Création d'un login, register et logout.
 ```php
 // Hashage du mot de passe en utilisant l'algorithme ARGON2ID
 // Un "sel" unique est automatiquement généré et inclus dans le hachage du mot de passe
-$pass = password_hash($_POST["user_password"], PASSWORD_ARGON2ID);
+$password = password_hash($_POST["user_password"], PASSWORD_ARGON2ID);
 ```
 
 `PASSWORD_ARGON2ID` est un algorithme de hachage sécurisé qui est résistant aux attaques par force brute et aux attaques par table de hachage précalculée (tables arc-en-ciel). Il est également conçu pour être résistant aux attaques par matériel spécialisé pour le hachage de mot de passe.
