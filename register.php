@@ -3,17 +3,17 @@
 require_once __DIR__ . "/utilities/header.ut.php";
 
 // On vérifie si le formulaire a été envoyé
-if(!empty($_POST)) {
+if (!empty($_POST)) {
     // Le formulaire a été envoyé
     // On vérifie que TOUS les champs requis sont remplis
-    if(isset($_POST["user_name"], $_POST["email_address"], $_POST["user_pass"]) && !empty($_POST["user_name"]) && !empty($_POST["email_address"]) && !empty($_POST["user_pass"])) {
+    if (isset($_POST["user_name"], $_POST["email_address"]) && !empty($_POST["user_name"]) && !empty($_POST["email_address"])) {
         // Le formulaire est complet
         // On récupère les données en les protégeants
 
         $pseudo = strip_tags($_POST["user_name"]);
 
         // On vérifie si l'email est valide
-        if(!filter_var($_POST["email_address"], FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($_POST["email_address"], FILTER_VALIDATE_EMAIL)) {
             die("L'addresse mail est incorrect");
         }
 
@@ -25,14 +25,15 @@ if(!empty($_POST)) {
         // On enregistre en base de données
         // On passe le password en direct car il est hashé, ROLE c'est du JSON
         $sql = "INSERT INTO `users`(`user_name`, `email_address`, `user_password`, `user_roles`) 
-        VALUES (:user_name, :email_address, '$pass', '[\"ROLE_USER\"]' )";
+        VALUES (:user_name, :email_address, '$pass', '[\"ROLE_USER\"]')";
 
         $query = $db->prepare($sql);
 
-        $query->bindValue(":user_name", $userName);
-        $query->bindValue(":email_address", $emailAddress);
+        $query->bindValue(":user_name", $pseudo);
+        $query->bindValue(":email_address", $_POST["email_address"]);
 
         $query->execute();
+
 
         // On récupère l'id du nouvel utilisateur
         $id = $db->lastInsertId();
@@ -54,43 +55,49 @@ if(!empty($_POST)) {
 
         // On redirige vers la page de profil
         header("Location: profil.php");
-    
+
     } else {
         die("Le formulaire est incomplet !");
     }
 }
 
+var_dump($_POST);
 
 ?>
 
 <body>
 
-    <form action="#" method="POST">
-        <fieldset>
-            <legend>Inscription utilisateur</legend>
-            <div class="row">
-                <div class="col mb-3">
-                    <label for="inputUsername" class="form-label">Nom utilisateur</label>
-                    <input type="text" class="form-control" id="inputUsername" name="user_name">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col mb-3">
-                    <label for="inputEmail" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="inputEmail" name="email_address">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col mb-3">
-                    <label for="inputPassword" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="inputPassword" name="user_password">
-                </div>
-            </div>
-            <div class="col mb-3">
-                <input type="submit" class="btn btn-primary">Inscription</button>
-            </div>
-        </fieldset>
-    </form>
+    <div class="container">
 
+        <form action="#" method="POST">
+            <fieldset>
+                <legend>Inscription utilisateur</legend>
+                <div class="row">
+                    <div class="col mb-3">
+                        <label for="inputUsername" class="form-label">Nom utilisateur</label>
+                        <input type="text" class="form-control" id="inputUsername" name="user_name">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col mb-3">
+                        <label for="inputEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="inputEmail" name="email_address">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col mb-3">
+                        <label for="inputPassword" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="inputPassword" name="user_password">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col mb-3">
+                        <input type="submit" class="btn btn-primary" value="Inscription">
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+
+    </div>
 
     <?php require_once __DIR__ . ("/utilities/footer.ut.php"); ?>

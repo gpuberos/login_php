@@ -3,12 +3,12 @@
 require_once __DIR__ . "/utilities/header.ut.php";
 
 // On vérifie si le formulaire a été envoyé
-if(!empty($_POST)) {
+if (!empty($_POST)) {
     // Le formulaire a été envoyé
     // On vérifie que TOUS les champs requis sont remplis
-    if(isset($_POST["email_address"], $_POST["user_password"]) && !empty($_POST["email_address"]) && !empty($_POST["user_password"])) {
+    if (isset($_POST["email_address"], $_POST["user_password"]) && !empty($_POST["email_address"]) && !empty($_POST["user_password"])) {
         // On vérifie que l'email en est un
-        if(!filter_var($_POST["email_address"], FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($_POST["email_address"], FILTER_VALIDATE_EMAIL)) {
             die("L'addresse mail est incorrect");
         }
 
@@ -50,21 +50,31 @@ if(!empty($_POST)) {
 ?>
 
 <body>
+    <div class="container">
 
-    <form action="#" method="POST">
-        <fieldset>
-            <legend>Connexion utilisateur</legend>
-            <div class="mb-3">
-                <label for="inputEmail" class="form-label">Email</label>
-                <input type="email" class="form-control" id="inputEmail" name="email_address">
-            </div>
-            <div class="mb-3">
-                <label for="inputPassword" class="form-label">Password</label>
-                <input type="password" class="form-control" id="inputPassword" name="user_password">
-            </div>
-            <input type="submit" class="btn btn-primary">Connexion</button>
-        </fieldset>
-    </form>
+        <form action="#" method="POST">
+            <fieldset>
+                <legend>Connexion utilisateur</legend>
+                <div class="row">
+                    <div class="col mb-3">
+                        <label for="inputEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="inputEmail" name="email_address">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col mb-3">
+                        <label for="inputPassword" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="inputPassword" name="user_password">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col mb-3">
+                        <input type="submit" class="btn btn-primary" value="Connexion">
+                    </div>
+                </div>
+            </fieldset>
+        </form>
 
+    </div>
 
-<?php require_once __DIR__ . ("/utilities/footer.ut.php"); ?>
+    <?php require_once __DIR__ . ("/utilities/footer.ut.php"); ?>
