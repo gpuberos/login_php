@@ -3,6 +3,15 @@
 // Inclusion du fichier header.ut.php qui se trouve dans le répertoire utilities
 require_once __DIR__ . "/utilities/header.ut.php";
 
+// Vérifie si une session utilisateur est active (pour empêcher l'accès à register via l'URL, si l'utilisateur a une session active)
+if (isset($_SESSION["user"])) {
+    // Si une session utilisateur est active, redirige l'utilisateur vers la page 'profil.php'
+    header("Location: profil.php");
+
+    // Arrête l'exécution du script après la redirection
+    exit;
+}
+
 // Vérification si le formulaire a été soumis
 if (!empty($_POST)) {
     // Le formulaire a été soumis
@@ -18,10 +27,10 @@ if (!empty($_POST)) {
 
         // Préparation de la requête SQL
         $query = $db->prepare($sql);
-        
+
         // Liaison de la valeur de l'email à l'identifiant :email_address dans la requête SQL
         $query->bindValue(":email_address", $_POST["email_address"]);
-        
+
         // Exécution de la requête SQL
         $query->execute();
 
@@ -57,32 +66,31 @@ if (!empty($_POST)) {
 
 ?>
 
-<body>
-    <div class="container py-4">
+<div class="container py-4">
 
-        <form action="#" method="POST" class="col-4 mx-auto">
-            <fieldset>
-                <legend>Connexion utilisateur</legend>
-                <div class="row">
-                    <div class="col mb-3">
-                        <label for="inputEmail" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="inputEmail" name="email_address">
-                    </div>
+    <form action="#" method="POST" class="col-4 mx-auto">
+        <fieldset>
+            <legend class="h3 mb-4 fw-normal">S'identifier</legend>
+            <div class="row">
+                <div class="col mb-3">
+                    <label for="inputEmail" class="form-label">Adresse e-mail</label>
+                    <input type="email" class="form-control" id="inputEmail" name="email_address">
                 </div>
-                <div class="row">
-                    <div class="col mb-3">
-                        <label for="inputPassword" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="inputPassword" name="user_password">
-                    </div>
+            </div>
+            <div class="row">
+                <div class="col mb-3">
+                    <label for="inputPassword" class="form-label">Mot de passe</label>
+                    <input type="password" class="form-control" id="inputPassword" name="user_password">
                 </div>
-                <div class="row">
-                    <div class="col mb-3">
-                        <input type="submit" class="btn btn-primary" value="Connexion">
-                    </div>
+            </div>
+            <div class="row">
+                <div class="col my-2">
+                    <input type="submit" class="btn btn-primary" value="Connexion">
                 </div>
-            </fieldset>
-        </form>
+            </div>
+        </fieldset>
+    </form>
 
-    </div>
+</div>
 
-    <?php require_once __DIR__ . ("/utilities/footer.ut.php"); ?>
+<?php require_once __DIR__ . ("/utilities/footer.ut.php"); ?>

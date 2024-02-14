@@ -3,6 +3,15 @@
 // Inclusion du fichier header.ut.php qui se trouve dans le répertoire utilities
 require_once __DIR__ . "/utilities/header.ut.php";
 
+// Vérifie si une session utilisateur est active (pour empêcher l'accès à register via l'URL, si l'utilisateur a une session active)
+if (isset($_SESSION["user"])) {
+    // Si une session utilisateur est active, redirige l'utilisateur vers la page 'profil.php'
+    header("Location: profil.php");
+
+    // Arrête l'exécution du script après la redirection
+    exit;
+}
+
 // Vérification si le formulaire a été soumis
 if (!empty($_POST)) {
     // Le formulaire a été soumis
@@ -35,7 +44,7 @@ if (!empty($_POST)) {
 
         // Liaison de la valeur du pseudo à l'identifiant :user_name dans la requête SQL
         $query->bindValue(":user_name", $pseudo);
-        
+
         // Liaison de la valeur de l'email à l'identifiant :email_address dans la requête SQL
         $query->bindValue(":email_address", $_POST["email_address"]);
 
@@ -68,9 +77,6 @@ if (!empty($_POST)) {
     }
 }
 
-
-var_dump($_POST);
-
 ?>
 
 <body>
@@ -79,27 +85,27 @@ var_dump($_POST);
 
         <form action="#" method="POST" class="col-4 mx-auto">
             <fieldset>
-                <legend>Inscription utilisateur</legend>
+                <legend class="h3 mb-4 fw-normal">Créer un compte</legend>
                 <div class="row">
                     <div class="col mb-3">
-                        <label for="inputUsername" class="form-label">Nom utilisateur</label>
+                        <label for="inputUsername" class="form-label">Votre nom</label>
                         <input type="text" class="form-control" id="inputUsername" name="user_name">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col mb-3">
-                        <label for="inputEmail" class="form-label">Email</label>
+                        <label for="inputEmail" class="form-label">Adresse e-mail</label>
                         <input type="email" class="form-control" id="inputEmail" name="email_address">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col mb-3">
-                        <label for="inputPassword" class="form-label">Password</label>
+                        <label for="inputPassword" class="form-label">Mot de passe</label>
                         <input type="password" class="form-control" id="inputPassword" name="user_password">
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col mb-3">
+                    <div class="col my-2">
                         <input type="submit" class="btn btn-primary" value="Inscription">
                     </div>
                 </div>
