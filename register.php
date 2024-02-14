@@ -1,51 +1,57 @@
 <?php
 
+// Inclusion du fichier header.ut.php qui se trouve dans le répertoire utilities
 require_once __DIR__ . "/utilities/header.ut.php";
 
-// On vérifie si le formulaire a été envoyé
+// Vérification si le formulaire a été soumis
 if (!empty($_POST)) {
-    // Le formulaire a été envoyé
-    // On vérifie que TOUS les champs requis sont remplis
+    // Le formulaire a été soumis
+    // Vérification que tous les champs requis sont remplis
     if (isset($_POST["user_name"], $_POST["email_address"]) && !empty($_POST["user_name"]) && !empty($_POST["email_address"])) {
         // Le formulaire est complet
-        // On récupère les données en les protégeants
+        // Récupération des données en les protégeant
 
+        // Suppression des balises HTML et PHP d'une chaîne
         $pseudo = strip_tags($_POST["user_name"]);
 
-        // On vérifie si l'email est valide
+        // Vérification de la validité de l'email
         if (!filter_var($_POST["email_address"], FILTER_VALIDATE_EMAIL)) {
             die("L'addresse mail est incorrect");
         }
 
-        // On va hasher le mot de passe (on choisit la constante algo de cryptage)
+        // Hashage du mot de passe en utilisant l'algorithme ARGON2ID
         $pass = password_hash($_POST["user_password"], PASSWORD_ARGON2ID);
 
-        // Ajoutez tous les contrôles souhaités
+        // Ajout de tous les contrôles souhaités ici
 
-        // On enregistre en base de données
-        // On passe le password en direct car il est hashé, ROLE c'est du JSON
+        // Enregistrement en base de données
+        // Le mot de passe est passé directement car il est hashé, ROLE est du JSON
         $sql = "INSERT INTO `users`(`user_name`, `email_address`, `user_password`, `user_roles`) 
         VALUES (:user_name, :email_address, '$pass', '[\"ROLE_USER\"]')";
 
+        // Préparation de la requête SQL
         $query = $db->prepare($sql);
 
+        // Liaison de la valeur du pseudo à l'identifiant :user_name dans la requête SQL
         $query->bindValue(":user_name", $pseudo);
+        
+        // Liaison de la valeur de l'email à l'identifiant :email_address dans la requête SQL
         $query->bindValue(":email_address", $_POST["email_address"]);
 
+        // Exécution de la requête SQL
         $query->execute();
 
-
-        // On récupère l'id du nouvel utilisateur
+        // Récupération de l'id du nouvel utilisateur
         $id = $db->lastInsertId();
 
-        // On connectera l'utilisateur
+        // Connexion de l'utilisateur
 
         // Si l'utilisateur et le mot de passe sont corrects
-        // On va pouvoir connecter l'utilisateur (on ouvre la session)
-        // On démarre la session PHP (Créatio de PHPSESSID)
+        // Connexion de l'utilisateur (ouverture de la session)
+        // Démarrage de la session PHP (Création de PHPSESSID)
         session_start();
 
-        // On va stocker dans $_SESSION les informations de l'utilisateur
+        // Stockage des informations de l'utilisateur dans $_SESSION
         $_SESSION["user"] = [
             "id" => $id,
             "username" => $pseudo,
@@ -53,13 +59,14 @@ if (!empty($_POST)) {
             "roles" => ["ROLE_USER"]
         ];
 
-        // On redirige vers la page de profil
+        // Redirection vers la page de profil
         header("Location: profil.php");
-
     } else {
+        // Le formulaire est incomplet
         die("Le formulaire est incomplet !");
     }
 }
+
 
 var_dump($_POST);
 

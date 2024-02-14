@@ -1,41 +1,48 @@
 <?php
 
+// Inclusion du fichier header.ut.php qui se trouve dans le répertoire utilities
 require_once __DIR__ . "/utilities/header.ut.php";
 
-// On vérifie si le formulaire a été envoyé
+// Vérification si le formulaire a été soumis
 if (!empty($_POST)) {
-    // Le formulaire a été envoyé
-    // On vérifie que TOUS les champs requis sont remplis
+    // Le formulaire a été soumis
+    // Vérification que tous les champs requis sont remplis
     if (isset($_POST["email_address"], $_POST["user_password"]) && !empty($_POST["email_address"]) && !empty($_POST["user_password"])) {
-        // On vérifie que l'email en est un
+        // Vérification de la validité de l'email
         if (!filter_var($_POST["email_address"], FILTER_VALIDATE_EMAIL)) {
             die("L'addresse mail est incorrect");
         }
 
-        // On se connecte à la BDD
+        // Connexion à la base de données et préparation de la requête SQL
         $sql = "SELECT * FROM `users` WHERE `email_address` = :email_address";
 
+        // Préparation de la requête SQL
         $query = $db->prepare($sql);
+        
+        // Liaison de la valeur de l'email à l'identifiant :email_address dans la requête SQL
         $query->bindValue(":email_address", $_POST["email_address"]);
+        
+        // Exécution de la requête SQL
         $query->execute();
 
+        // Récupération du premier enregistrement renvoyé par la requête SQL
         $user = $query->fetch();
 
+        // Vérification si un utilisateur a été trouvé
         if (!$user) {
             die("L'utilisateur et/ou le mot de passe est incorrect");
         }
 
-        // Si on a un user existant, on peut vérifier le mot de passe
+        // Si un utilisateur existant a été trouvé, vérification du mot de passe
         if (!password_verify($_POST["user_password"], $user["user_password"])) {
             die("L'utilisateur et/ou le mot de passe est incorrect");
         }
 
         // Si l'utilisateur et le mot de passe sont corrects
-        // On va pouvoir connecter l'utilisateur (on ouvre la session)
-        // On démarre la session PHP (Créatio de PHPSESSID)
+        // Démarrage d'une nouvelle session ou reprise d'une session existante
         session_start();
 
-        // On va stocker dans $_SESSION les informations de l'utilisateur
+        // Stockage des informations de l'utilisateur dans la variable de session $_SESSION
         $_SESSION["user"] = [
             "id" => $user["id"],
             "username" => $user["user_name"],
@@ -43,10 +50,11 @@ if (!empty($_POST)) {
             "roles" => $user["user_roles"]
         ];
 
-        // On redirige vers la page de profil
+        // Redirection vers la page de profil
         header("Location: profil.php");
     }
 }
+
 ?>
 
 <body>
