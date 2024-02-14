@@ -20,6 +20,7 @@ if (!empty($_POST)) {
         }
 
         // Hashage du mot de passe en utilisant l'algorithme ARGON2ID
+        // Un "sel" unique est automatiquement généré et inclus dans le hachage du mot de passe
         $pass = password_hash($_POST["user_password"], PASSWORD_ARGON2ID);
 
         // Ajout de tous les contrôles souhaités ici
